@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓国語 初級単語・フレーズ 50選 クイズ</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans JP', 'Noto Sans KR', sans-serif;
+    }
+    .font-kr {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 select-none">
+
+  <!-- App Header -->
+  <header class="w-full max-w-md flex justify-between items-center py-3 px-4 bg-slate-800/80 backdrop-blur rounded-2xl border border-slate-700/50 mb-4 shadow-lg">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center shadow-md font-extrabold text-lg text-white">
+        한
+      </div>
+      <div>
+        <h1 class="text-sm font-bold leading-tight bg-gradient-to-r from-pink-400 to-rose-300 bg-clip-text text-transparent">ハングルクイズ</h1>
+        <p class="text-[10px] text-slate-400">初級必須 50フレーズ</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 text-xs">
+      <!-- Streak Badge -->
+      <div class="flex items-center gap-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2.5 py-1 rounded-full font-bold">
+        <span>🔥</span>
+        <span id="streak-count">0</span><span class="text-[10px] font-normal">日</span>
+      </div>
+      <!-- Sound Switch -->
+      <button id="toggle-sound-btn" onclick="toggleGlobalAudio()" class="p-2 rounded-full bg-slate-700/60 hover:bg-slate-700 text-slate-300 transition" title="音声・効果音切替">
+        <span id="sound-icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="w-full max-w-md flex-1 flex flex-col justify-center my-auto">
+
+    <!-- SCREEN 1: HOME / SETTINGS -->
+    <section id="screen-home" class="bg-slate-800/90 border border-slate-700/60 rounded-3xl p-6 shadow-2xl space-y-6">
+      <div class="text-center space-y-2">
+        <div class="inline-block px-3 py-1 bg-rose-500/20 text-rose-300 rounded-full text-xs font-semibold tracking-wide border border-rose-500/30">
+          韓国語 初級学習
+        </div>
+        <h2 class="text-2xl font-extrabold text-white">挨拶＆日常言葉 50</h2>
+        <p class="text-xs text-slate-400">「ハングル＋音声＋ルビ」で楽しく覚える選択クイズ</p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 gap-3 bg-slate-900/60 p-3.5 rounded-2xl border border-slate-700/40 text-center">
+        <div>
+          <div class="text-[10px] text-slate-400">学習済み単語</div>
+          <div class="text-lg font-bold text-slate-100" id="learned-count">0 / 50</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-slate-400">苦手な単語</div>
+          <div class="text-lg font-bold text-rose-400" id="weak-count">0</div>
+        </div>
+      </div>
+
+      <!-- Session Mode Selector -->
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-300 flex items-center justify-between">
+          <span>問題数を選択</span>
+          <span class="text-[10px] text-pink-400 font-normal">隙間時間にサクサク!</span>
+        </label>
+        <div class="grid grid-cols-3 gap-2" id="session-count-buttons">
+          <button onclick="selectSessionCount(5)" class="session-btn py-2.5 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-bold text-sm transition">5問</button>
+          <button onclick="selectSessionCount(10)" class="session-btn py-2.5 rounded-xl border border-slate-700 bg-slate-900/50 text-slate-300 font-bold text-sm hover:border-slate-600 transition">10問</button>
+          <button onclick="selectSessionCount(50)" class="session-btn py-2.5 rounded-xl border border-slate-700 bg-slate-900/50 text-slate-300 font-bold text-sm hover:border-slate-600 transition">全50問</button>
+        </div>
+      </div>
+
+      <!-- User Option Toggles -->
+      <div class="space-y-3 bg-slate-900/40 p-4 rounded-2xl border border-slate-700/30 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300">問題文にカタカナ（ルビ）を表示</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="setting-kana" class="sr-only peer" checked onchange="saveSettings()">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-500"></div>
+          </label>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300">問題表示時に自動で発音再生</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="setting-autoplay" class="sr-only peer" checked onchange="saveSettings()">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-500"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2.5 pt-2">
+        <button onclick="startQuiz('standard')" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/25 active:scale-[0.98] transition animate-pulse-subtle text-base flex items-center justify-center gap-2">
+          <span>▶ クイズをはじめる</span>
+        </button>
+
+        <button id="btn-weak-mode" onclick="startQuiz('weak')" class="w-full py-3 bg-slate-900 border border-rose-500/40 text-rose-300 hover:bg-rose-500/10 font-bold rounded-2xl transition text-xs flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+          <span>🎯 苦手な問題だけ集中復習</span>
+        </button>
+      </div>
+    </section>
+
+
+    <!-- SCREEN 2: QUIZ -->
+    <section id="screen-quiz" class="hidden bg-slate-800/90 border border-slate-700/60 rounded-3xl p-5 shadow-2xl space-y-4">
+      <!-- Progress Bar & Counter -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-xs text-slate-400 font-bold">
+          <span id="quiz-progress-text">問題 1 / 5</span>
+          <span id="quiz-score-live" class="text-rose-400">正解数: 0</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-pink-500 to-rose-400 rounded-full transition-all duration-300" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-700/70 text-center relative space-y-3">
+        <!-- Kana Toggle Chip -->
+        <button onclick="toggleKanaOnFly()" class="absolute top-3 right-3 text-[10px] px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition">
+          ルビ <span id="kana-fly-status">ON</span>
+        </button>
+
+        <!-- Korean Text -->
+        <div id="q-korean" class="font-kr text-3xl sm:text-4xl font-black text-slate-100 tracking-wide py-2">
+          안녕하세요
+        </div>
+
+        <!-- Katakana Reading -->
+        <div id="q-kana" class="text-xs font-bold text-rose-300 tracking-wider">
+          アンニョンハセヨ
+        </div>
+
+        <!-- Play Audio Button -->
+        <div class="pt-1">
+          <button onclick="playTTSCurrent()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-xs transition active:scale-95">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-[.73] 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <span>音声を聞く</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Answer Options (4 buttons) -->
+      <div class="grid grid-cols-1 gap-2.5" id="options-container">
+        <!-- Standard Option Button Template -->
+      </div>
+
+      <!-- Explanation Box (Appears after answer) -->
+      <div id="explanation-box" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-slate-700 text-xs space-y-2 animate-fadeIn">
+        <div class="flex items-center gap-2 font-bold" id="result-status-title">
+          <span id="result-icon" class="text-base">✅</span>
+          <span id="result-text" class="text-emerald-400">正解！</span>
+        </div>
+        <p id="explanation-detail" class="text-slate-300 leading-relaxed">
+          解説がここに表示されます。
+        </p>
+      </div>
+
+      <!-- Next Button -->
+      <button id="btn-next" onclick="nextQuestion()" class="hidden w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-[0.98] transition text-sm flex items-center justify-center gap-1">
+        <span>次の問題へ</span>
+        <span>→</span>
+      </button>
+    </section>
+
+
+    <!-- SCREEN 3: RESULT -->
+    <section id="screen-result" class="hidden bg-slate-800/90 border border-slate-700/60 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
+      <div class="space-y-1">
+        <div class="text-3xl">🎉</div>
+        <h2 class="text-xl font-extrabold text-white">セッション完了！</h2>
+        <p class="text-xs text-slate-400">お疲れ様でした！繰り返し練習で身につけましょう。</p>
+      </div>
+
+      <!-- Score Gauge / Card -->
+      <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-700/60 space-y-3">
+        <div class="text-4xl font-black bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent" id="result-score-percent">
+          80%
+        </div>
+        <div class="text-xs text-slate-300 font-medium">
+          正解数: <span id="result-score-num" class="font-bold text-white">4</span> / <span id="result-total-num">5</span>
+        </div>
+        <div id="result-message" class="text-xs font-bold text-pink-300 bg-pink-500/10 py-1.5 px-3 rounded-full border border-pink-500/20 inline-block">
+          素晴らしい精度です！
+        </div>
+      </div>
+
+      <!-- Review List -->
+      <div class="text-left space-y-2">
+        <div class="text-xs font-bold text-slate-300 flex justify-between items-center">
+          <span>今回出題された単語</span>
+          <span class="text-[10px] text-slate-500">タップで音声再生</span>
+        </div>
+        <div id="session-review-list" class="max-h-48 overflow-y-auto space-y-2 pr-1 custom-scrollbar text-xs">
+          <!-- Dynamic review list items -->
+        </div>
+      </div>
+
+      <!-- Result Action Buttons -->
+      <div class="space-y-2 pt-2">
+        <button onclick="startQuiz('standard')" class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl shadow-lg active:scale-[0.98] transition text-sm">
+          もう一度チャレンジ
+        </button>
+        <button onclick="showScreen('home')" class="w-full py-3 bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 font-bold rounded-2xl transition text-xs">
+          ホームへ戻る
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="w-full max-w-md text-center py-3 text-[10px] text-slate-500">
+    韓国語学習 4択クイズアプリ • Web Speech TTS Ready
+  </footer>
+
+
+  <!-- JS Application Logic & Dataset -->
+  <script>
+    // --- DATASET: 50 KOREAN PHRASES ---
+    const KOREAN_DATA = [
+      { id: 1, question_kr: "안녕하세요", pronunciation: "アンニョンハセヨ", options: ["こんにちは", "さようなら", "ありがとう", "ごめんなさい"], answer_index: 0, tts_text: "안녕하세요", explanation: "最も一般的で丁寧な「こんにちは（おはよう・こんばんは）」の挨拶です。" },
+      { id: 2, question_kr: "안녕히 계세요", pronunciation: "アンニョンヒ ゲセヨ", options: ["お気をつけて", "さようなら（自分が去る時）", "初めまして", "おやすみなさい"], answer_index: 1, tts_text: "안녕히 계세요", explanation: "自分がその場を去り、相手が留まる場合に使う「さようなら」です。" },
+      { id: 3, question_kr: "안녕히 가세요", pronunciation: "アンニョンヒ カセヨ", options: ["さようなら（相手が去る時）", "お久しぶりです", "ごちそうさまでした", "大丈夫です"], answer_index: 0, tts_text: "안녕히 가세요", explanation: "相手が立ち去る場合や、互いに立ち去る場合に使う「さようなら」です。" },
+      { id: 4, question_kr: "감사합니다", pronunciation: "カムサハムニダ", options: ["すみません", "ありがとうございます", "いいえ", "いただきます"], answer_index: 1, tts_text: "감사합니다", explanation: "漢字で「感謝します」と書く丁寧なお礼の言葉です。" },
+      { id: 5, question_kr: "고맙습니다", pronunciation: "コマプスムニダ", options: ["ありがとうございます", "どういたしまして", "ごめんなさい", "また会いましょう"], answer_index: 0, tts_text: "고맙습니다", explanation: "固有語由来のお礼の言葉で、「감사합니다」と同様に丁寧な表現です。" },
+      { id: 6, question_kr: "죄송합니다", pronunciation: "チェソンハムニダ", options: ["失礼します", "分かりました", "申し訳ありません", "大丈夫です"], answer_index: 2, tts_text: "죄송합니다", explanation: "深く謝罪する際に使う丁寧な「申し訳ありません」です。" },
+      { id: 7, question_kr: "미안해요", pronunciation: "ミアネヨ", options: ["ごめんなさい", "ありがとうございます", "美味しいです", "助けてください"], answer_index: 0, tts_text: "미안해요", explanation: "親しい間柄や少し柔らかいニュアンスで謝る「ごめんなさい」です。" },
+      { id: 8, question_kr: "실례합니다", pronunciation: "シルレハムニダ", options: ["おめでとうございます", "失礼します / すみません", "お疲れ様でした", "はじめまして"], answer_index: 1, tts_text: "실례합니다", explanation: "人に声をかけたり、部屋に入ったりする時の「失礼します」です。" },
+      { id: 9, question_kr: "천만에요", pronunciation: "チョンマネヨ", options: ["どういたしまして", "もちろんです", "ダメです", "久しぶりです"], answer_index: 0, tts_text: "천만에요", explanation: "お礼に対する「どういたしまして」のフォーマルな表現です。" },
+      { id: 10, question_kr: "오랜만이에요", pronunciation: "オレンマニエヨ", options: ["お久しぶりです", "おめでとうございます", "おやすみなさい", "気をつけてください"], answer_index: 0, tts_text: "오랜만이에요", explanation: "久しぶりに会った相手に使う「お久しぶりです」です。" },
+      { id: 11, question_kr: "좋은 아침이에요", pronunciation: "チョウン アチミエヨ", options: ["良い一日を", "おはようございます", "お疲れ様です", "こんばんは"], answer_index: 1, tts_text: "좋은 아침이에요", explanation: "英語の「Good morning」に由来する直訳的な朝の挨拶です。" },
+      { id: 12, question_kr: "잘 자요", pronunciation: "チャル チャヨ", options: ["おやすみなさい", "よくできました", "頑張ってください", "気をつけて"], answer_index: 0, tts_text: "잘 자요", explanation: "「よく寝てください」という意味のフランク〜丁寧の中間の夜の挨拶です。" },
+      { id: 13, question_kr: "처음 뵙겠습니다", pronunciation: "チョウム ベルケスムニダ", options: ["お会いできて嬉しいです", "初めまして", "また会いましょう", "よろしくお願いします"], answer_index: 1, tts_text: "처음 뵙겠습니다", explanation: "初対面で挨拶する時の定番フレーズ「初めまして」です。" },
+      { id: 14, question_kr: "반갑습니다", pronunciation: "パンガプスムニダ", options: ["初めまして", "お会いできて嬉しいです", "さようなら", "いただきます"], answer_index: 1, tts_text: "반갑습니다", explanation: "自己紹介の際「お会いできて嬉しいです」と伝える慣用表現です。" },
+      { id: 15, question_kr: "또 봐요", pronunciation: "ト ワヨ", options: ["また会いましょう", "気を付けて", "じゃあね", "何ですか？"], answer_index: 0, tts_text: "또 봐요", explanation: "「また（또）見ましょう/会いましょう（봐요）」という意味の軽い挨拶です。" },
+      { id: 16, question_kr: "네", pronunciation: "ネー", options: ["いいえ", "はい", "たぶん", "そうです"], answer_index: 1, tts_text: "네", explanation: "返事の「はい」です。（「예（イェ）」も同様に使われます）" },
+      { id: 17, question_kr: "아니요", pronunciation: "アニヨ", options: ["はい", "違います", "いいえ", "違います"], answer_index: 2, tts_text: "아니요", explanation: "否定の返事「いいえ」です。" },
+      { id: 18, question_kr: "괜찮아요", pronunciation: "クェンチャナヨ", options: ["大丈夫です / 結構です", "難しいです", "危険です", "分かりません"], answer_index: 0, tts_text: "괜찮아요", explanation: "「大丈夫です」「問題ないです」「（断る際の）結構です」など幅広く使えます。" },
+      { id: 19, question_kr: "알겠습니다", pronunciation: "アルゲスムニダ", options: ["分かりません", "知りません", "分かりました / 了解しました", "そう思います"], answer_index: 2, tts_text: "알겠습니다", explanation: "相手の言うことを理解・承諾した時の丁寧な「分かりました」です。" },
+      { id: 20, question_kr: "몰라요", pronunciation: "モルラヨ", options: ["知っています", "分かりません / 知りません", "要りません", "行きます"], answer_index: 1, tts_text: "몰라요", explanation: "「知らない」「分からかない」という意味の言葉です。" },
+      { id: 21, question_kr: "맞아요", pronunciation: "マジャヨ", options: ["違います", "その通りです / 相槌の「そうです」", "嫌です", "好きです"], answer_index: 1, tts_text: "맞아요", explanation: "相手の意見に同意する時の相槌「そうです」「その通りです」です。" },
+      { id: 22, question_kr: "글쎄요", pronunciation: "クルッセヨ", options: ["さあ… / どうでしょう", "はい", "不可能です", "絶対に"], answer_index: 0, tts_text: "글쎄요", explanation: "返事に詰まった時や明確な回答を避ける際の「さあ…」「うーん」です。" },
+      { id: 23, question_kr: "당연하죠", pronunciation: "タンヨナジョ", options: ["無理です", "もちろんです / 当たり前です", "たぶん", "秘密です"], answer_index: 1, tts_text: "당연하죠", explanation: "「当然ですよ」「もちろんです」と強い同意を表します。" },
+      { id: 24, question_kr: "좋아요", pronunciation: "チョアヨ", options: ["嫌です", "いいですね / 好きです", "悪いです", "大きいです"], answer_index: 1, tts_text: "좋아요", explanation: "提案に賛成する「いいですね」や「好きです」を意味します。" },
+      { id: 25, question_kr: "안 돼요", pronunciation: "アン ドゥェヨ", options: ["ダメです / いけません", "できます", "問題ないです", "いいですよ"], answer_index: 0, tts_text: "안 돼요", explanation: "許可できない時や不可な状態を表す「ダメです」です。" },
+      { id: 26, question_kr: "맛있어요", pronunciation: "マシッソヨ", options: ["まずいです", "美味しいです", "甘いです", "辛いです"], answer_index: 1, tts_text: "맛있어요", explanation: "食事中や食後に「美味しいです」と伝える定番表現です。" },
+      { id: 27, question_kr: "얼마예요?", pronunciation: "オルマイエヨ？", options: ["何時ですか？", "どこですか？", "いくらですか？", "誰ですか？"], answer_index: 2, tts_text: "얼마예요?", explanation: "買い物やお店で価格を尋ねる時の「いくらですか？」です。" },
+      { id: 28, question_kr: "이거 주세요", pronunciation: "イゴ ジュセヨ", options: ["これを見せてください", "これをください", "これを下げてください", "これを包んでください"], answer_index: 1, tts_text: "이거 주세요", explanation: "指を指しながら商品やメニューを注文する「これをください」です。" },
+      { id: 29, question_kr: "도와주세요", pronunciation: "トワジュセヨ", options: ["助けてください / 手伝ってください", "教えてください", "行かないでください", "許してください"], answer_index: 0, tts_text: "도와주세요", explanation: "困った時や手助けが必要な時に使う「助けてください」です。" },
+      { id: 30, question_kr: "어디예요?", pronunciation: "オディエヨ？", options: ["いつですか？", "何ですか？", "どこですか？", "どうですか？"], answer_index: 2, tts_text: "어디예요?", explanation: "場所を尋ねる「どこですか？」です。（例：화장실이 어디예요?）" },
+      { id: 31, question_kr: "진짜요?", pronunciation: "チンチャヨ？", options: ["本当ですか？", "嘘でしょう？", "冗談ですか？", "マジで？（タメ口）"], answer_index: 0, tts_text: "진짜요?", explanation: "驚いた時や確認する時の「本当ですか？」です。" },
+      { id: 32, question_kr: "잠시만요", pronunciation: "チャムシマンニョ", options: ["少々お待ちください / すみません（通ります）", "お気をつけください", "お久しぶりです", "ご遠慮ください"], answer_index: 0, tts_text: "잠시만요", explanation: "「少し待ってください」のほか、人混みを通る時の「すみません」としても多用されます。" },
+      { id: 33, question_kr: "축하해요", pronunciation: "チュカヘヨ", options: ["おめでとうございます", "応援しています", "感謝します", "お疲れ様です"], answer_index: 0, tts_text: "축하해요", explanation: "誕生日やめでたい出来事を祝う「おめでとうございます」です。" },
+      { id: 34, question_kr: "수고하셨습니다", pronunciation: "スゴハショッスムニダ", options: ["ごめんなさい", "お疲れ様でした", "お気をつけて", "いってらっしゃい"], answer_index: 1, tts_text: "수고하셨습니다", explanation: "仕事終わりや労いの場面で使う「お疲れ様でした」です。" },
+      { id: 35, question_kr: "잘 먹겠습니다", pronunciation: "チャル モッケスムニダ", options: ["いただきます", "ごちそうさまでした", "美味しかったです", "もっとください"], answer_index: 0, tts_text: "잘 먹겠습니다", explanation: "直訳すると「よく食べます」。食事の前の「いただきます」です。" },
+      { id: 36, question_kr: "잘 먹었습니다", pronunciation: "チャル モゴッスムニダ", options: ["いただきます", "お腹がすきました", "ごちそうさまでした", "お会計をお願いします"], answer_index: 2, tts_text: "잘 먹었습니다", explanation: "直訳すると「よく食べました」。食後の挨拶「ごちそうさまでした」です。" },
+      { id: 37, question_kr: "다녀오겠습니다", pronunciation: "タニョオゲスムニダ", options: ["行ってきます", "ただいま", "行ってらっしゃい", "お帰りなさい"], answer_index: 0, tts_text: "다녀오겠습니다", explanation: "外出する時の「行ってきます」です。" },
+      { id: 38, question_kr: "다녀왔습니다", pronunciation: "タニョワッスムニダ", options: ["行ってきます", "ただいま帰りました", "お帰りなさい", "気をつけて"], answer_index: 1, tts_text: "다녀왔습니다", explanation: "帰宅した時の「ただいま帰りました」です。" },
+      { id: 39, question_kr: "화장실이 어디예요?", pronunciation: "ファジャンシリ オディエヨ？", options: ["駅はどこですか？", "トイレはどこですか？", "出口はどこですか？", "レジはどこですか？"], answer_index: 1, tts_text: "화장실이 어디예요?", explanation: "旅行で最も重要な「トイレはどこですか？」というフレーズです。" },
+      { id: 40, question_kr: "메뉴판 주세요", pronunciation: "メニュパン ジュセヨ", options: ["メニューをください", "お会計をお願いします", "お水をください", "オススメは何ですか？"], answer_index: 0, tts_text: "메뉴판 주세요", explanation: "飲食店で「メニュー表（메뉴판）をください」と頼む表現です。" },
+      { id: 41, question_kr: "기뻐요", pronunciation: "キッポヨ", options: ["悲しいです", "嬉しいです", "楽しいです", "驚きました"], answer_index: 1, tts_text: "기뻐요", explanation: "喜ばしい出来事があった時の「嬉しいです」です。" },
+      { id: 42, question_kr: "즐거워요", pronunciation: "チュルガウォヨ", options: ["楽しいです", "面白いです", "静かです", "寂しいです"], answer_index: 0, tts_text: "즐거워요", explanation: "雰囲気が明るく「楽しいです」を表す感情表現です。" },
+      { id: 43, question_kr: "어려워요", pronunciation: "オリョウォヨ", options: ["簡単です", "難しいです", "つまらないです", "怖いです"], answer_index: 1, tts_text: "어려워요", explanation: "課題や問題が「難しいです」という意味です。" },
+      { id: 44, question_kr: "쉬워요", pronunciation: "シュウォヨ", options: ["難しいです", "簡単です / 易しいです", "近いです", "遠いです"], answer_index: 1, tts_text: "쉬워요", explanation: "難易度が低い「簡単です」という意味です。" },
+      { id: 45, question_kr: "피곤해요", pronunciation: "ピゴネヨ", options: ["忙しいです", "疲れています", "痛いです", "眠いです"], answer_index: 1, tts_text: "피곤해요", explanation: "身体的・精神的に「疲れています」を意味します。" },
+      { id: 46, question_kr: "배고파요", pronunciation: "ペゴパヨ", options: ["お腹がいっぱいです", "喉が渇きました", "お腹が空きました", "気分が悪いです"], answer_index: 2, tts_text: "배고파요", explanation: "日常で非常によく使われる「お腹が空きました」です。" },
+      { id: 47, question_kr: "배불러요", pronunciation: "ペブルロヨ", options: ["お腹が空きました", "お腹がいっぱいです", "美味しいです", "酔いました"], answer_index: 1, tts_text: "배불러요", explanation: "満腹の時に使う「お腹がいっぱいです」です。" },
+      { id: 48, question_kr: "슬퍼요", pronunciation: "スルポヨ", options: ["悲しいです", "怒っています", "悔しいです", "うらやましいです"], answer_index: 0, tts_text: "슬퍼요", explanation: "悲しい出来事や感情を表す「悲しいです」です。" },
+      { id: 49, question_kr: "심심해요", pronunciation: "シムシメイヨ", options: ["忙しいです", "退屈です / 暇です", "寂しいです", "興味深いです"], answer_index: 1, tts_text: "심심해요", explanation: "やる事がなくて「暇だな」「退屈だな」という気持ちを表します。" },
+      { id: 50, question_kr: "보고 싶어요", pronunciation: "ポゴ シポヨ", options: ["会いたいです / 見たいです", "買いたいです", "行きたいです", "食べたいです"], answer_index: 0, tts_text: "보고 싶어요", explanation: "恋しい人や家族に「会いたいです」、または映画などを「見たいです」の両方で使えます。" }
+    ];
+
+    // --- APP STATE ---
+    let state = {
+      sessionCount: 5,
+      showKana: true,
+      autoPlayAudio: true,
+      globalSoundEnabled: true,
+      streak: 0,
+      learnedIds: new Set(),
+      weakIds: new Set(),
+      
+      // Active Quiz State
+      quizQuestions: [],
+      currentIndex: 0,
+      score: 0,
+      currentAnswered: false,
+      sessionHistory: [] // [{question, isCorrect, userChoiceIndex}]
+    };
+
+    // --- WEB AUDIO API SOUND EFFECTS ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(type) {
+      if (!state.globalSoundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now); // A3
+          osc.frequency.setValueAtTime(164.81, now + 0.12); // E3
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        }
+      } catch (e) {
+        console.log("Audio not supported or restricted", e);
+      }
+    }
+
+    // --- WEB SPEECH TTS ---
+    function playTTS(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.85; // 初学者向けにやや低速
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.error("TTS Error:", e);
+      }
+    }
+
+    function playTTSCurrent() {
+      const currentQ = state.quizQuestions[state.currentIndex];
+      if (currentQ) playTTS(currentQ.tts_text);
+    }
+
+    // --- INITIALIZATION & LOCALSTORAGE ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorageData();
+      updateHomeStats();
+    });
+
+    function loadStorageData() {
+      const savedKana = localStorage.getItem('kr_quiz_kana');
+      if (savedKana !== null) state.showKana = JSON.parse(savedKana);
+
+      const savedAutoPlay = localStorage.getItem('kr_quiz_autoplay');
+      if (savedAutoPlay !== null) state.autoPlayAudio = JSON.parse(savedAutoPlay);
+
+      const savedLearned = localStorage.getItem('kr_quiz_learned');
+      if (savedLearned) state.learnedIds = new Set(JSON.parse(savedLearned));
+
+      const savedWeak = localStorage.getItem('kr_quiz_weak');
+      if (savedWeak) state.weakIds = new Set(JSON.parse(savedWeak));
+
+      // Streak calculation
+      const lastDate = localStorage.getItem('kr_quiz_last_date');
+      const savedStreak = parseInt(localStorage.getItem('kr_quiz_streak') || '0', 10);
+      const today = new Date().toDateString();
+
+      if (lastDate === today) {
+        state.streak = savedStreak;
+      } else {
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (lastDate === yesterday) {
+          state.streak = savedStreak;
+        } else if (lastDate) {
+          state.streak = 0; // Missed a day
+        } else {
+          state.streak = 0;
+        }
+      }
+
+      document.getElementById('setting-kana').checked = state.showKana;
+      document.getElementById('setting-autoplay').checked = state.autoPlayAudio;
+      document.getElementById('streak-count').textContent = state.streak;
+    }
+
+    function saveSettings() {
+      state.showKana = document.getElementById('setting-kana').checked;
+      state.autoPlayAudio = document.getElementById('setting-autoplay').checked;
+      localStorage.setItem('kr_quiz_kana', JSON.stringify(state.showKana));
+      localStorage.setItem('kr_quiz_autoplay', JSON.stringify(state.autoPlayAudio));
+    }
+
+    function updateStorageData() {
+      localStorage.setItem('kr_quiz_learned', JSON.stringify(Array.from(state.learnedIds)));
+      localStorage.setItem('kr_quiz_weak', JSON.stringify(Array.from(state.weakIds)));
+
+      // Record activity for streak
+      const today = new Date().toDateString();
+      const lastDate = localStorage.getItem('kr_quiz_last_date');
+      if (lastDate !== today) {
+        state.streak += 1;
+        localStorage.setItem('kr_quiz_streak', state.streak.toString());
+        localStorage.setItem('kr_quiz_last_date', today);
+        document.getElementById('streak-count').textContent = state.streak;
+      }
+
+      updateHomeStats();
+    }
+
+    function updateHomeStats() {
+      document.getElementById('learned-count').textContent = `${state.learnedIds.size} / 50`;
+      document.getElementById('weak-count').textContent = state.weakIds.size;
+      
+      const weakBtn = document.getElementById('btn-weak-mode');
+      if (state.weakIds.size === 0) {
+        weakBtn.disabled = true;
+      } else {
+        weakBtn.disabled = false;
+      }
+    }
+
+    function toggleGlobalAudio() {
+      state.globalSoundEnabled = !state.globalSoundEnabled;
+      document.getElementById('sound-icon').textContent = state.globalSoundEnabled ? '🔊' : '🔇';
+    }
+
+    function selectSessionCount(count) {
+      state.sessionCount = count;
+      const btns = document.querySelectorAll('.session-btn');
+      btns.forEach(btn => {
+        btn.classList.remove('border-rose-500', 'bg-rose-500/20', 'text-rose-300');
+        btn.classList.add('border-slate-700', 'bg-slate-900/50', 'text-slate-300');
+      });
+      event.currentTarget.classList.remove('border-slate-700', 'bg-slate-900/50', 'text-slate-300');
+      event.currentTarget.classList.add('border-rose-500', 'bg-rose-500/20', 'text-rose-300');
+    }
+
+    function showScreen(screenName) {
+      document.getElementById('screen-home').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+
+      document.getElementById(`screen-${screenName}`).classList.remove('hidden');
+    }
+
+    // --- QUIZ GAME LOGIC ---
+    function startQuiz(mode = 'standard') {
+      if (mode === 'weak') {
+        const weakList = KOREAN_DATA.filter(item => state.weakIds.has(item.id));
+        state.quizQuestions = shuffleArray([...weakList]);
+      } else {
+        state.quizQuestions = shuffleArray([...KOREAN_DATA]).slice(0, state.sessionCount);
+      }
+
+      state.currentIndex = 0;
+      state.score = 0;
+      state.sessionHistory = [];
+
+      showScreen('quiz');
+      renderQuestion();
+    }
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function toggleKanaOnFly() {
+      state.showKana = !state.showKana;
+      document.getElementById('setting-kana').checked = state.showKana;
+      saveSettings();
+      updateKanaDisplay();
+    }
+
+    function updateKanaDisplay() {
+      const kanaFlyStatus = document.getElementById('kana-fly-status');
+      const qKana = document.getElementById('q-kana');
+      
+      if (state.showKana) {
+        kanaFlyStatus.textContent = 'ON';
+        qKana.classList.remove('invisible');
+      } else {
+        kanaFlyStatus.textContent = 'OFF';
+        qKana.classList.add('invisible');
+      }
+    }
+
+    function renderQuestion() {
+      state.currentAnswered = false;
+      const q = state.quizQuestions[state.currentIndex];
+      const total = state.quizQuestions.length;
+
+      // Update Header
+      document.getElementById('quiz-progress-text').textContent = `問題 ${state.currentIndex + 1} / ${total}`;
+      document.getElementById('quiz-score-live').textContent = `正解数: ${state.score}`;
+      const progressPercent = ((state.currentIndex + 1) / total) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+      // Question Card
+      document.getElementById('q-korean').textContent = q.question_kr;
+      document.getElementById('q-kana').textContent = q.pronunciation;
+      updateKanaDisplay();
+
+      // Explanation & Next Button reset
+      document.getElementById('explanation-box').classList.add('hidden');
+      document.getElementById('btn-next').classList.add('hidden');
+
+      // Options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = `option-btn w-full p-4 rounded-2xl bg-slate-900 border border-slate-700/80 text-slate-200 hover:border-slate-500 font-medium text-sm text-left transition duration-200 flex items-center justify-between group active:scale-[0.99]`;
+        btn.onclick = () => handleAnswer(index);
+
+        btn.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-lg bg-slate-800 text-slate-400 text-xs flex items-center justify-center font-bold group-hover:bg-rose-500/20 group-hover:text-rose-300 transition">
+              ${['A', 'B', 'C', 'D'][index]}
+            </span>
+            <span class="font-bold">${optText}</span>
+          </div>
+          <span class="opt-indicator text-lg opacity-0"></span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+
+      // Autoplay Audio
+      if (state.autoPlayAudio) {
+        setTimeout(() => playTTS(q.tts_text), 200);
+      }
+    }
+
+    function handleAnswer(selectedIndex) {
+      if (state.currentAnswered) return;
+      state.currentAnswered = true;
+
+      const q = state.quizQuestions[state.currentIndex];
+      const isCorrect = selectedIndex === q.answer_index;
+
+      if (isCorrect) {
+        state.score++;
+        playSound('correct');
+        state.learnedIds.add(q.id);
+        state.weakIds.delete(q.id);
+      } else {
+        playSound('wrong');
+        state.weakIds.add(q.id);
+      }
+
+      state.sessionHistory.push({
+        question: q,
+        isCorrect: isCorrect,
+        userChoiceIndex: selectedIndex
+      });
+
+      // Option Buttons Visual Feedback
+      const optionBtns = document.querySelectorAll('.option-btn');
+      optionBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        const indicator = btn.querySelector('.opt-indicator');
+
+        if (idx === q.answer_index) {
+          btn.classList.remove('bg-slate-900', 'border-slate-700/80');
+          btn.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+          indicator.textContent = '✅';
+          indicator.classList.remove('opacity-0');
+        } else if (idx === selectedIndex && !isCorrect) {
+          btn.classList.remove('bg-slate-900', 'border-slate-700/80');
+          btn.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+          indicator.textContent = '❌';
+          indicator.classList.remove('opacity-0');
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      });
+
+      // Show Explanation Box
+      const expBox = document.getElementById('explanation-box');
+      const resIcon = document.getElementById('result-icon');
+      const resText = document.getElementById('result-text');
+      const resDetail = document.getElementById('explanation-detail');
+
+      if (isCorrect) {
+        resIcon.textContent = '🎉';
+        resText.textContent = '正解です！';
+        resText.className = 'text-emerald-400 font-bold';
+      } else {
+        resIcon.textContent = '💡';
+        resText.textContent = `正解は「${q.options[q.answer_index]}」です`;
+        resText.className = 'text-rose-400 font-bold';
+      }
+
+      resDetail.innerHTML = `<span class="font-bold text-rose-300">[${q.pronunciation}]</span> ${q.explanation}`;
+      expBox.classList.remove('hidden');
+
+      // Show Next Button
+      document.getElementById('btn-next').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      state.currentIndex++;
+      if (state.currentIndex < state.quizQuestions.length) {
+        renderQuestion();
+      } else {
+        finishQuizSession();
+      }
+    }
+
+    function finishQuizSession() {
+      updateStorageData();
+
+      const total = state.quizQuestions.length;
+      const scorePct = Math.round((state.score / total) * 100);
+
+      document.getElementById('result-score-percent').textContent = `${scorePct}%`;
+      document.getElementById('result-score-num').textContent = state.score;
+      document.getElementById('result-total-num').textContent = total;
+
+      const msgElem = document.getElementById('result-message');
+      if (scorePct === 100) {
+        msgElem.textContent = '🏆 素晴らしい！全問正解です！';
+      } else if (scorePct >= 80) {
+        msgElem.textContent = '✨ すごい！ほぼバッチリ覚えています！';
+      } else if (scorePct >= 50) {
+        msgElem.textContent = '👍 良い調子です！復習してパーフェクトを目指しましょう。';
+      } else {
+        msgElem.textContent = '📚 繰り返し練習でハングルに慣れていきましょう！';
+      }
+
+      // Render Session Review List
+      const reviewListElem = document.getElementById('session-review-list');
+      reviewListElem.innerHTML = '';
+
+      state.sessionHistory.forEach((item) => {
+        const q = item.question;
+        const row = document.createElement('div');
+        row.className = `p-2.5 rounded-xl border flex items-center justify-between ${
+          item.isCorrect 
+            ? 'bg-slate-900/60 border-slate-700/60' 
+            : 'bg-rose-500/10 border-rose-500/30'
+        }`;
+
+        row.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="text-sm">${item.isCorrect ? '✅' : '❌'}</span>
+            <div>
+              <div class="font-kr font-bold text-slate-200 text-sm flex items-center gap-2">
+                <span>${q.question_kr}</span>
+                <span class="text-[10px] text-rose-300 font-normal">(${q.pronunciation})</span>
+              </div>
+              <div class="text-[11px] text-slate-400">${q.options[q.answer_index]}</div>
+            </div>
+          </div>
+          <button onclick="playTTS('${q.tts_text}')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            🔊
+          </button>
+        `;
+        reviewListElem.appendChild(row);
+      });
+
+      showScreen('result');
+    }
+  </script>
+</body>
+</html>
